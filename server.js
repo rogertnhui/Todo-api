@@ -60,6 +60,23 @@ app.post('/todos', function(req, res) {
 }); 
 
 
+// DELETE /todos/:id 
+
+app.delete('/todos/:id', function(req, res) {
+	var deleteTodoId = parseInt(req.params.id, 10); 
+	var matchedDeleteTodo = _.findWhere(todos, {"id": deleteTodoId}); 
+	if (matchedDeleteTodo){
+		todos = _.without(todos, matchedDeleteTodo);
+		res.send(todos);
+	} else {
+		res.status(404).send(); 
+	}
+}); 
+
+
+
+
+
 app.listen(PORT, function () {
 	console.log ('Express listening on port ' + PORT + '!'); 
 }); 
