@@ -13,18 +13,27 @@ app.get('/', function (req, res) {
 	res.send('Todo API Root'); 
 }); 
 
-// GET /todos?completed=true
+// GET /todos?completed=true&q=house 
 app.get('/todos', function (req, res) {
 	var queryParams = req.query; 
 	var filteredTodos = todos; 
 	console.log(queryParams); 
-	if (!_.isEmpty(queryParams) && queryParams.completed === 'false') {
+	if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
 		console.log ('querying non-completed items'); 
 		filteredTodos = _.where (filteredTodos, {completed : false});
-	} else if (!_.isEmpty(queryParams) && queryParams.completed === 'true') {
+	} else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true') {
 		console.log ('querying completed items'); 
 		filteredTodos = _.where (filteredTodos, {completed : true});
 	}
+
+	if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0){
+		console.log ('quering items with ' + queryParams.q); 
+	//	filteredTodos.forEach (function (todo) {console.log (todo.description.indexOf(queryParams.q));}); 
+		filteredTodos = _.filter(filteredTodos, function (todo) {
+			return todo.description.toLowerCase().indexOf(queryParams.q.toLowerCase()) > -1; 
+		}); 
+	}
+
 
 	res.json(filteredTodos); 
 }); 
