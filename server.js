@@ -42,21 +42,24 @@ app.get('/todos', function (req, res) {
 // GET /todos/:id 
 app.get('/todos/:id', function (req, res) {
 	var todoId = parseInt(req.params.id, 10); 
-	var matchedTodo = _.findWhere(todos, {"id": todoId});
-	// var matchedTodo
-	// todos.forEach(function(todo){
-	// 	console.log ('checking id ' + todo.id); 
-	// 	if (todoId === todo.id) {
-	// 		matchedTodo = todo; 
-	// 		console.log ('Match found'); 
-	// 	};
-	// })
-	if (matchedTodo) {
-		res.send(matchedTodo); 
-	} else {
-		console.log('404');
-		res.status(404).send();
-	}
+	db.todo.findById(todoId).then(function(todo){
+		if (!!todo){
+			res.send(todo.toJSON()); 
+		} else {
+			console.log ('404');
+			res.status(404).send();
+		}
+	}, function (e) {
+		res.status(500).send();
+	}); 
+	// var matchedTodo = _.findWhere(todos, {"id": todoId});
+
+	// if (matchedTodo) {
+	// 	res.send(matchedTodo); 
+	// } else {
+	// 	console.log('404');
+	// 	res.status(404).send();
+	// }
 });
 
 // POST /todos
@@ -72,24 +75,7 @@ app.post('/todos', function(req, res) {
 		res.status(400).json(e);
 	});
 
-	// db.todo.create
-	// respond with 200 and todo object (call .toJSON)
-	// res.status(400).json(e)
 
-	// if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
-	// 	return res.status(400).send(); 
-	// }
-
-	// body.id = todoNextId++; 
-	
-	// // set body.description to be trimmed value 
-	// body.description = body.description.trim(); 
-
-	// todos.push (body); 
-	// //add id field 
-	// //push body into array 
-	// console.log('description: ' + body.description);
-	// res.json(body); 
 }); 
 
 
